@@ -1,0 +1,69 @@
+
+### ask for a livekit token. Responds a jwt for livekit
+GET https://frontend-api.pump.fun/livestreams/livekit/token/host?mint=BsZktVTLj1uL5e7za73mqa5ccAUzx6iDqh5JATgspump&creator=DrZ9tDQ537V3VpvQUGpanATSSuDuYvWCjpAD1KgZk6Ut
+Cookie: auth_token=<extract-from-pumpfun-cookie>
+
+### get currently running livestreams for a room (aka "mint")
+GET https://frontend-api.pump.fun/livestreams/BsZktVTLj1uL5e7za73mqa5ccAUzx6iDqh5JATgspump
+
+### Create a livestream
+POST https://frontend-api.pump.fun/livestreams/create-livestream
+Content-Type: application/json; charset=utf-8
+Cookie: auth_token=<use-livekit-token-from-above>
+
+{
+  "mint": "BsZktVTLj1uL5e7za73mqa5ccAUzx6iDqh5JATgspump",
+  "creator": "DrZ9tDQ537V3VpvQUGpanATSSuDuYvWCjpAD1KgZk6Ut",
+  "currently_live": true,
+  "stream_start_timestamp": 1725454262
+}
+
+### Close a livestream
+
+PUT https://frontend-api.pump.fun/livestreams/update-livestream
+Content-Type: application/json; charset=utf-8
+Cookie: auth_token=<use-livekit-token-from-above>
+
+{
+  "id": 86949,
+  "mint": "BsZktVTLj1uL5e7za73mqa5ccAUzx6iDqh5JATgspump",
+  "creator": "DrZ9tDQ537V3VpvQUGpanATSSuDuYvWCjpAD1KgZk6Ut",
+  "stream_start_timestamp": 1725453494000,
+  "stream_end_timestamp": 1725453656000,
+  "num_participants": 1,
+  "currently_live": false
+}
+
+
+### liuvechat related ->
+
+### Create a *chat* (why is?) this is unauthenticated: 
+GET https://frontend-api.pump.fun/livestreams/stream/livechat-token?userId=DrZ9tDQ537V3VpvQUGpanATSSuDuYvWCjpAD1KgZk6Ut
+
+###
+
+POST https://frontend-api.pump.fun/livestreams/stream/livechat-channel/BsZktVTLj1uL5e7za73mqa5ccAUzx6iDqh5JATgspump
+Content-Type: application/json; charset=utf-8
+Cookie: auth_token=
+
+
+### Connect to chat RTC
+
+POST https://chat.stream-io-api.com/channels/livestream/BsZktVTLj1uL5e7za73mqa5ccAUzx6iDqh5JATgspump/query?user_id=DrZ9tDQ537V3VpvQUGpanATSSuDuYvWCjpAD1KgZk6Ut&connection_id=66bcc336-0a1d-1cb8-0200-00000029f3d3&api_key=numvkprvbzpg
+Content-Type: application/json; charset=utf-8
+stream-auth-type: jwt
+Authorization: <chat token from above>
+
+{
+  "data": {
+    "image": "https://cf-ipfs.com/ipfs/QmVUJeKfxVXoJgFaWc91175fwngLLpefi5WqRfadmBKRv8",
+    "name": "The Cyclist"
+  },
+  "state": true,
+  "watch": true,
+  "presence": false,
+  "messages": {
+    "limit": 25
+  }
+}
+

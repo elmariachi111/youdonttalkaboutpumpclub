@@ -1,25 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useImages } from "./useImages";
 
+/// displays a canvas with changing content. exposes its captured video stream
 export default function SomeCanvas(props) {
-  const {setStream} = props
+  const {setStream, images:  {folder,from,to} } = props
   const cref = useRef(null);
 
-  const images = [
-    "/img/1.jpg",
-    "/img/2.jpg",
-    "/img/3.jpg",
-    "/img/4.jpg",
-    "/img/5.jpg",
-    "/img/6.jpg",
-    "/img/7.jpg",
-    "/img/8.jpg",
-    "/img/9.jpg",
-    "/img/10.jpg",
-  ].map((imgUrl) => {
-    const img = new Image();
-    img.src = imgUrl;
-    return img;
-  });
+  const images = useImages(folder, from, to);
 
   useEffect(() => {
     if (!cref) return;
@@ -37,8 +24,13 @@ export default function SomeCanvas(props) {
       ctx.drawImage(images[currentIndex], 0, 0, canvas.width, canvas.height);
     }
     const stream = canvas.captureStream();
+    console.debug("canvas stream ready", stream)
     setStream(stream)
-    setInterval(nextImage, 500); // Change image every 3 seconds
+    const timeout = setInterval(nextImage, 500); // Change image every 3 seconds
+
+    return () => {
+      clearInterval(timeout);
+    }
   }, [cref]);
 
   return <canvas id="myCanvas" width="640" height="480" ref={cref}></canvas>;
